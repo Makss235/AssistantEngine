@@ -1,0 +1,13 @@
+[
+  {
+    "rule": "fallback на непонятную фразу",
+    "steps": [
+      { 
+        "intent": "nlu_fallback"
+      },
+      { 
+        "action": "utter_default"
+      }
+    ]
+  }
+]

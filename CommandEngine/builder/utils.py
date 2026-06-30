@@ -7,8 +7,11 @@ class BuildError(Exception):
 
 
 def load_json(path: Path) -> dict:
-    with path.open(encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with path.open(encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        raise BuildError(f"Error decoding JSON from {path}: {e}")
 
 
 def full_intent(m: dict) -> str:
