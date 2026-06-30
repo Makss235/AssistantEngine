@@ -14,25 +14,43 @@ def load_json(path: Path) -> dict:
         raise BuildError(f"Error decoding JSON from {path}: {e}")
 
 
-def full_intent(m: dict) -> str:
-    return f"{m['module']}_{m['intent']}"
+def get_full_intent(cmd: dict) -> str:
+    return f"{cmd['module']}_{cmd['intent']}"
 
 
-def form_name(m: dict) -> str:
-    return f"{full_intent(m)}_form"
+def get_form_name(cmd: dict) -> str:
+    return f"{get_full_intent(cmd)}_form"
 
 
-def command_type(m: dict) -> str:
-    if "form" in m and "handler" in m:
+def get_command_type(cmd: dict) -> str:
+    if "form" in cmd and "handler" in cmd:
         return "form"
-    if "handler" in m:
+    if "handler" in cmd:
         return "dynamic"
-    if "response" in m:
+    if "response" in cmd:
         return "static"
-    raise BuildError(
-        f"The module '{m['module']}': command without 'handler', 'form' and 'response'"
-    )
+    raise BuildError(f"The module '{cmd['module']}': command without 'handler', 'form' and 'response'")
 
 
 def as_list(value) -> list:
     return value if isinstance(value, list) else [value]
+
+
+def iter_commands(manifest: dict) -> list[dict]:
+    if "commands" not in manifest:
+        return [manifest]
+
+    module_name = manifest["module"]
+    entities = manifest.get("entities", {})
+    base = {
+        "module": module_name, 
+        "__dir": manifest.get("__dir")
+    }
+    out = []
+
+    for cmd in manifest["commands"]:
+        merged = {**base, **cmd}
+        if entities or "entities" in cmd:
+            merged["entities"] = {**entities, **cmd.get("entities", {})}
+        out.append(merged)
+    return out
