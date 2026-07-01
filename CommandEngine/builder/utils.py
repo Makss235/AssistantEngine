@@ -36,7 +36,7 @@ def as_list(value) -> list:
     return value if isinstance(value, list) else [value]
 
 
-def iter_commands(manifest: dict) -> list[dict]:
+def manifest_to_commands(manifest: dict) -> list[dict]:
     if "commands" not in manifest:
         return [manifest]
 
