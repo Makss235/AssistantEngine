@@ -247,6 +247,13 @@ def aggregate(manifests: list[dict], shared: dict) -> dict:
 
 
 def _add_entity_nlu(ir: dict, entity_name: str, entity_def: dict):
+    """
+    Добавление NLU данных для сущности в промежуточное представление (IR).
+    Args:
+        ir (dict): Промежуточное представление.
+        entity_name (str): Имя сущности.
+        entity_def (dict): Определение сущности.
+    """
     if entity_def.get("lookup"):
         ir["nlu"].append((
             "lookup", 
