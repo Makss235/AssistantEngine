@@ -129,6 +129,14 @@ def check_collisions(manifests: list[dict], shared: dict):
 
 # ------------ Aggregation in IR ------------
 def aggregate(manifests: list[dict], shared: dict) -> dict:
+    """
+    Агрегация всех манифестов и общих данных в промежуточное представление (IR).
+    Args:
+        manifests (list[dict]): Список манифестов модулей.
+        shared (dict): Общие данные из директории _shared.
+    Returns:
+        dict: Промежуточное представление (IR).
+    """
     ir = {
         "intents": [],
         "entities": dict(shared["entities"]),
