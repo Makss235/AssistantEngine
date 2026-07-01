@@ -274,6 +274,11 @@ def _add_entity_nlu(ir: dict, entity_name: str, entity_def: dict):
 
 # ------------ Serialization of IR to YAML ------------
 def emit_nlu(ir: dict):
+    """
+    Генерация файла nlu.yml из промежуточного представления (IR).
+    Args:
+        ir (dict): Промежуточное представление.
+    """
     lines = [settings.GEN_HEADER, f'version: "{settings.RASA_VERSION}"', "", "nlu:"]
     for kind, payload in ir["nlu"]:
         if kind == "intent":
