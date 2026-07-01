@@ -272,13 +272,31 @@ def _add_entity_nlu(ir: dict, entity_name: str, entity_def: dict):
         ))
 
 
+# ------------ Serialization of IR to YAML ------------
+def emit_nlu(ir: dict):
+    lines = [settings.GEN_HEADER, f'version: "{settings.RASA_VERSION}"', "", "nlu:"]
+    for kind, payload in ir["nlu"]:
+        if kind == "intent":
+            lines.append(f"# from module: {payload['module']}")
+            lines.append(f"- intent: {payload['name']}")
+        elif kind == "lookup":
+            lines.append(f"- lookup: {payload['name']}")
+        elif kind == "synonym":
+            lines.append(f"- synonym: {payload['name']}")
+        lines.append("  examples: |")
+        lines += [f"    - {ex}" for ex in payload["examples"]]
+        lines.append("")
+    (settings.DATA / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def build():
     manifests, shared = scan()
     # print(manifests)
     validate_each(manifests)
     check_collisions(manifests, shared)
     ir = aggregate(manifests, shared)
-    print(json.dumps(ir, indent=2, ensure_ascii=False))
+    # print(json.dumps(ir, indent=2, ensure_ascii=False))
+    emit_nlu(ir)
 
 
 if __name__ == "__main__":
