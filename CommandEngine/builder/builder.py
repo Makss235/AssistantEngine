@@ -323,7 +323,7 @@ def serialize_domain(ir: dict):
         "session_expiration_time": 60,
         "carry_over_slots_to_new_session": True,
     }
-    (settings.DATA / "domain.yml").write_text(settings.GEN_HEADER + _dump(domain), encoding="utf-8")
+    (settings.RASA / "domain.yml").write_text(settings.GEN_HEADER + _dump(domain), encoding="utf-8")
 
 
 def _slot_mapping(slot_name: str, slot_def: dict) -> dict:
