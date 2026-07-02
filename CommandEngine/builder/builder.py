@@ -16,11 +16,11 @@ def scan() -> tuple[list[dict], dict]:
     Raises:
         BuildError: Директория модулей не существует.
     """
-    if not settings.MODULES.exists():
-        raise BuildError(f"The modules directory does not exist: {settings.MODULES}")
+    if not settings.MODULES_PATH.exists():
+        raise BuildError(f"The modules directory does not exist: {settings.MODULES_PATH}")
     
     manifests = []
-    for directory in sorted(settings.MODULES.iterdir()):
+    for directory in sorted(settings.MODULES_PATH.iterdir()):
         if not directory.is_dir() or directory.name == "_shared":
             continue
 
@@ -50,7 +50,7 @@ def _load_shared(name: str, default_json: dict | list) -> dict | list:
     Returns:
         dict | list: Загруженные данные или значение по умолчанию.
     """
-    path = settings.SHARED / name
+    path = settings.SHARED_PATH / name
     return load_json(path) if path.exists() else default_json
 
 
@@ -292,7 +292,7 @@ def serialize_nlu(ir: dict):
         lines.append("  examples: |")
         lines += [f"    - {ex}" for ex in payload["examples"]]
         lines.append("")
-    (settings.DATA / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (settings.DATA_PATH / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def serialize_domain(ir: dict):
@@ -323,7 +323,7 @@ def serialize_domain(ir: dict):
         "session_expiration_time": 60,
         "carry_over_slots_to_new_session": True,
     }
-    (settings.RASA / "domain.yml").write_text(settings.GEN_HEADER + _dump(domain), encoding="utf-8")
+    (settings.RASA_PATH / "domain.yml").write_text(settings.GEN_HEADER + _dump(domain), encoding="utf-8")
 
 
 def _slot_mapping(slot_name: str, slot_def: dict) -> dict:
@@ -361,7 +361,7 @@ def serialize_rules(ir: dict):
     Args:
         ir (dict): Промежуточное представление.
     """
-    (settings.DATA / "rules.yml").write_text(
+    (settings.DATA_PATH / "rules.yml").write_text(
         settings.GEN_HEADER + _dump({
             "version": settings.RASA_VERSION, 
             "rules": ir["rules"]
@@ -375,7 +375,7 @@ def serialize_stories(ir: dict):
     Args:
         ir (dict): Промежуточное представление.
     """
-    path = settings.DATA / "stories.yml"
+    path = settings.DATA_PATH / "stories.yml"
     if ir["stories"]:
         path.write_text(
             settings.GEN_HEADER + _dump({
