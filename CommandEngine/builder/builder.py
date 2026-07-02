@@ -292,7 +292,7 @@ def serialize_nlu(ir: dict):
         lines.append("  examples: |")
         lines += [f"    - {ex}" for ex in payload["examples"]]
         lines.append("")
-    (settings.DATA_PATH / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (settings.RASA_DATA_PATH / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def serialize_domain(ir: dict):
@@ -361,7 +361,7 @@ def serialize_rules(ir: dict):
     Args:
         ir (dict): Промежуточное представление.
     """
-    (settings.DATA_PATH / "rules.yml").write_text(
+    (settings.RASA_DATA_PATH / "rules.yml").write_text(
         settings.GEN_HEADER + _dump({
             "version": settings.RASA_VERSION, 
             "rules": ir["rules"]
@@ -375,7 +375,7 @@ def serialize_stories(ir: dict):
     Args:
         ir (dict): Промежуточное представление.
     """
-    path = settings.DATA_PATH / "stories.yml"
+    path = settings.RASA_DATA_PATH / "stories.yml"
     if ir["stories"]:
         path.write_text(
             settings.GEN_HEADER + _dump({
@@ -399,16 +399,25 @@ def _dump(data: dict) -> str:
 
 
 def build():
+    print(f"{settings.ENGINE_NAME} builder, version {settings.ENGINE_VERSION}")
     manifests, shared = scan()
-    # print(manifests)
+    print(f"Found {len(manifests)} modules, {len(shared['entities'])} shared entities, {len(shared['rules'])} shared rules, "
+          f"{len(shared['stories'])} shared stories, {len(shared['responses'])} shared responses")
+
     validate_each(manifests)
     check_collisions(manifests, shared)
+    print("Validation passed, generating Rasa files...")
+
     ir = aggregate_in_ir(manifests, shared)
-    # print(json.dumps(ir, indent=2, ensure_ascii=False))
+    settings.RASA_DATA_PATH.mkdir(parents=True, exist_ok=True)
+    
     serialize_nlu(ir)
     serialize_domain(ir)
     serialize_rules(ir)
     serialize_stories(ir)
+
+    print(f"Rasa files successfully generated in {settings.RASA_DATA_PATH} and {settings.RASA_PATH}")
+
 
 if __name__ == "__main__":
     try:
