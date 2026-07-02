@@ -34,6 +34,6 @@
 
   "handler": { 
     "type": "function", 
-    "name": "weather.run" 
+    "name": "run" 
   }
 }

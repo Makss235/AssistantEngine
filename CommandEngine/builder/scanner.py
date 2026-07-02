@@ -11,19 +11,19 @@ def scan() -> tuple[list[dict], dict]:
     Raises:
         BuildError: Директория модулей не существует.
     """
-    if not settings.MODULES_PATH.exists():
-        raise BuildError(f"The modules directory does not exist: {settings.MODULES_PATH}")
+    if not settings.MODULES_DIR.exists():
+        raise BuildError(f"The modules directory does not exist: {settings.MODULES_DIR}")
     
     manifests = []
-    for directory in sorted(settings.MODULES_PATH.iterdir()):
+    for directory in sorted(settings.MODULES_DIR.iterdir()):
         if not directory.is_dir() or directory.name == "_shared":
             continue
 
-        manifest_path = directory / "manifest.json"
-        if not manifest_path.exists():
+        manifest_file = directory / "manifest.json"
+        if not manifest_file.exists():
             print(f"Warning: skipping '{directory.name}': manifest.json not found")
             continue
-        manifest_json = load_json(manifest_path)
+        manifest_json = load_json(manifest_file)
         manifest_json["__dir"] = directory
         manifests.append(manifest_json)
 
@@ -45,5 +45,5 @@ def _load_shared(name: str, default_json: dict | list) -> dict | list:
     Returns:
         dict | list: Загруженные данные или значение по умолчанию.
     """
-    path = settings.SHARED_PATH / name
-    return load_json(path) if path.exists() else default_json
+    file_from_shared = settings.SHARED_DIR / name
+    return load_json(file_from_shared) if file_from_shared.exists() else default_json

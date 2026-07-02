@@ -23,7 +23,7 @@ def serialize_nlu(ir: dict):
         lines.append("  examples: |")
         lines += [f"    - {ex}" for ex in payload["examples"]]
         lines.append("")
-    (settings.RASA_DATA_PATH / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (settings.RASA_DATA_DIR / "nlu.yml").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def serialize_domain(ir: dict):
@@ -54,7 +54,7 @@ def serialize_domain(ir: dict):
         "session_expiration_time": 60,
         "carry_over_slots_to_new_session": True,
     }
-    (settings.RASA_PATH / "domain.yml").write_text(settings.GEN_HEADER + _dump(domain), encoding="utf-8")
+    (settings.RASA_DIR / "domain.yml").write_text(settings.GEN_HEADER + _dump(domain), encoding="utf-8")
 
 
 def _slot_mapping(slot_name: str, slot_def: dict) -> dict:
@@ -92,7 +92,7 @@ def serialize_rules(ir: dict):
     Args:
         ir (dict): Промежуточное представление.
     """
-    (settings.RASA_DATA_PATH / "rules.yml").write_text(
+    (settings.RASA_DATA_DIR / "rules.yml").write_text(
         settings.GEN_HEADER + _dump({
             "version": settings.RASA_VERSION, 
             "rules": ir["rules"]
@@ -106,16 +106,16 @@ def serialize_stories(ir: dict):
     Args:
         ir (dict): Промежуточное представление.
     """
-    path = settings.RASA_DATA_PATH / "stories.yml"
+    stories_file = settings.RASA_DATA_DIR / "stories.yml"
     if ir["stories"]:
-        path.write_text(
+        stories_file.write_text(
             settings.GEN_HEADER + _dump({
                 "version": settings.RASA_VERSION, 
                 "stories": ir["stories"]
             }), encoding="utf-8"
         )
-    elif path.exists():
-        path.unlink()
+    elif stories_file.exists():
+        stories_file.unlink()
 
 
 def _dump(data: dict) -> str:

@@ -10,15 +10,14 @@ class Settings(BaseSettings):
     RASA_VERSION: str = "3.1"
 
     # Paths
-    BUILDER_PATH: Path = Path(__file__).resolve().parent
-    CORE_PATH: Path = BUILDER_PATH.parent
-    MODULES_PATH: Path = CORE_PATH / "modules"
-    SHARED_PATH: Path = MODULES_PATH / "_shared"
-    RASA_PATH: Path = CORE_PATH / "rasa"
-    RASA_DATA_PATH: Path = RASA_PATH / "data"
-    SCHEMA_FILE: Path = BUILDER_PATH / "schemas" / "manifest.schema.json"
+    BUILDER_DIR: Path = Path(__file__).resolve().parent
+    CORE_DIR: Path = BUILDER_DIR.parent
+    MODULES_DIR: Path = CORE_DIR / "modules"
+    SHARED_DIR: Path = MODULES_DIR / "_shared"
+    RASA_DIR: Path = CORE_DIR / "rasa"
+    RASA_DATA_DIR: Path = RASA_DIR / "data"
+    SCHEMA_FILE: Path = BUILDER_DIR / "schemas" / "manifest.schema.json"
 
-    
     ENTITY_RE: re.Pattern = re.compile(r"\]\(([a-z0-9_]+)\)")
 
 
