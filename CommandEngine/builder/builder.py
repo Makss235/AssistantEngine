@@ -129,7 +129,7 @@ def check_collisions(manifests: list[dict], shared: dict):
 
 
 # ------------ Aggregation in IR ------------
-def aggregate(manifests: list[dict], shared: dict) -> dict:
+def aggregate_in_ir(manifests: list[dict], shared: dict) -> dict:
     """
     Агрегация всех манифестов и общих данных в промежуточное представление (IR).
     Args:
@@ -355,6 +355,38 @@ def _slot_mapping(slot_name: str, slot_def: dict) -> dict:
     raise BuildError(f"The slot '{slot_name}': unknown source from={src!r}")
 
 
+def serialize_rules(ir: dict):
+    """
+    Генерация файла rules.yml из промежуточного представления (IR).
+    Args:
+        ir (dict): Промежуточное представление.
+    """
+    (settings.DATA / "rules.yml").write_text(
+        settings.GEN_HEADER + _dump({
+            "version": settings.RASA_VERSION, 
+            "rules": ir["rules"]
+        }), encoding="utf-8"
+    )
+
+
+def serialize_stories(ir: dict):
+    """
+    Генерация файла stories.yml из промежуточного представления (IR).
+    Args:
+        ir (dict): Промежуточное представление.
+    """
+    path = settings.DATA / "stories.yml"
+    if ir["stories"]:
+        path.write_text(
+            settings.GEN_HEADER + _dump({
+                "version": settings.RASA_VERSION, 
+                "stories": ir["stories"]
+            }), encoding="utf-8"
+        )
+    elif path.exists():
+        path.unlink()
+
+
 def _dump(data: dict) -> str:
     """
     Сериализация словаря в YAML.
@@ -371,11 +403,12 @@ def build():
     # print(manifests)
     validate_each(manifests)
     check_collisions(manifests, shared)
-    ir = aggregate(manifests, shared)
+    ir = aggregate_in_ir(manifests, shared)
     # print(json.dumps(ir, indent=2, ensure_ascii=False))
     serialize_nlu(ir)
     serialize_domain(ir)
-
+    serialize_rules(ir)
+    serialize_stories(ir)
 
 if __name__ == "__main__":
     try:
