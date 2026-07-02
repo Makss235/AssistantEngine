@@ -4,8 +4,8 @@ from pathlib import Path
 from types import ModuleType
 from typing import Callable
 
-from config import settings
-from utils import *
+from builder.config import settings
+from builder.utils import *
 
 
 def _import_handler_module(module_path: Path, module_name: str) -> ModuleType:

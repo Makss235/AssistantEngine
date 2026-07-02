@@ -10,7 +10,7 @@ CORE_ENGINE_DIR = Path(__file__).resolve().parents[2]
 if str(CORE_ENGINE_DIR) not in sys.path:
     sys.path.insert(0, str(CORE_ENGINE_DIR))
 
-from builder.registry import REGISTRY
+from registry import REGISTRY
 
 
 class ActionDispatch(Action):
