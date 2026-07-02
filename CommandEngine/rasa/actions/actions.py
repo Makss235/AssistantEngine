@@ -1,27 +1,37 @@
-# This files contains your custom actions which can be used to run
-# custom Python code.
-#
-# See this guide on how to implement these action:
-# https://rasa.com/docs/rasa/custom-actions
+import sys
+from pathlib import Path
+from typing import Any
+
+from rasa_sdk import Action, Tracker
+from rasa_sdk.executor import CollectingDispatcher
+
+# Добавление пути к каталогу CommandEngine в sys.path для корректного импорта модулей
+CORE_ENGINE_DIR = Path(__file__).resolve().parents[2]
+if str(CORE_ENGINE_DIR) not in sys.path:
+    sys.path.insert(0, str(CORE_ENGINE_DIR))
+
+from builder.registry import REGISTRY
 
 
-# This is a simple example for a custom action which utters "Hello World!"
+class ActionDispatch(Action):
+    def name(self) -> str:
+        return "action_dispatch"
 
-# from typing import Any, Text, Dict, List
-#
-# from rasa_sdk import Action, Tracker
-# from rasa_sdk.executor import CollectingDispatcher
-#
-#
-# class ActionHelloWorld(Action):
-#
-#     def name(self) -> Text:
-#         return "action_hello_world"
-#
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#
-#         dispatcher.utter_message(text="Hello World!")
-#
-#         return []
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker,
+            domain: dict[str, Any]) -> list[dict[str, Any]]:
+        intent = (tracker.latest_message or {}).get("intent", {}).get("name")
+        slots = {k: v for k, v in tracker.current_slot_values().items() if v is not None}
+        entities = {
+            e["entity"]: e["value"]
+            for e in (tracker.latest_message or {}).get("entities", [])
+        }
+
+        handler = REGISTRY.get(intent)
+        if handler is None:
+            dispatcher.utter_message(text="Команда пока не поддерживается.")
+            return []
+
+        result = handler(slots, entities) or {}
+        if result.get("text"):
+            dispatcher.utter_message(text=result["text"])
+        return result.get("events", [])
