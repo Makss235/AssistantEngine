@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommandEngine — панель управления</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        button { font-size: 1rem; padding: 0.5rem 1.25rem; cursor: pointer; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; white-space: pre-wrap; min-height: 3rem; }
+        .error { color: #f48771; }
+    </style>
+</head>
+<body>
+    <h1>Панель билдера</h1>
+    <button id="build">Собрать проект</button>
+    <pre id="output">Готов к сборке.</pre>
+
+    <script>
+        const btn = document.getElementById("build");
+        const out = document.getElementById("output");
+
+        btn.addEventListener("click", async () => {
+            btn.disabled = true;
+            out.className = "";
+            out.textContent = "Сборка...";
+            try {
+                const res = await fetch("/api/build", { method: "POST" });
+                const data = await res.json();
+                out.textContent = data.log || "";
+                if (!data.ok) {
+                    out.className = "error";
+                    out.textContent += "\n\nОШИБКА: " + data.error;
+                }
+            } catch (e) {
+                out.className = "error";
+                out.textContent = "Сетевая ошибка: " + e;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
