@@ -18,52 +18,52 @@ def list_modules() -> dict:
     return {"ok": True, "data": modules_service.list_modules()}
 
 
-@router.get("/{name}")
-def module_detail(name: str) -> dict:
+@router.get("/{module_name}")
+def module_detail(module_name: str) -> dict:
     """
     Возвращает подробности модуля: файлы и разобранный манифест.
     Args:
-        name (str): Имя модуля.
+        module_name (str): Имя модуля.
     Returns:
         dict: {ok, data} - подробности модуля.
     Raises:
         HTTPException: 400 - некорректное имя модуля, 404 - модуль не найден.
     """
     try:
-        return {"ok": True, "data": modules_service.module_detail(name)}
+        return {"ok": True, "data": modules_service.module_detail(module_name)}
     except panel_utils.PanelError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.get("/{name}/files/{filename}")
-def read_file(name: str, filename: str) -> dict:
+@router.get("/{module_name}/files/{file_name}")
+def read_file(module_name: str, file_name: str) -> dict:
     """
     Возвращает содержимое файла модуля для просмотра/подсветки.
     Args:
-        name (str): Имя модуля.
-        filename (str): Имя файла внутри модуля.
+        module_name (str): Имя модуля.
+        file_name (str): Имя файла внутри модуля.
     Returns:
         dict: {ok, data} - содержимое файла.
     Raises:
         HTTPException: 400 - некорректное имя модуля или файла, 404 - модуль или файл не найден.
     """
     try:
-        return {"ok": True, "data": modules_service.read_module_file(name, filename)}
+        return {"ok": True, "data": modules_service.read_module_file(module_name, file_name)}
     except panel_utils.PanelError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.put("/{name}/files/{filename}")
-def write_file(name: str, filename: str) -> dict:
+@router.put("/{module_name}/files/{file_name}")
+def write_file(module_name: str, file_name: str) -> dict:
     """
     Сохранение файла модуля (пока не реализовано).
     Args:
-        name (str): Имя модуля.
-        filename (str): Имя файла внутри модуля.
+        module_name (str): Имя модуля.
+        file_name (str): Имя файла внутри модуля.
     Returns:
         dict: {ok, data} - результат сохранения.
     Raises:

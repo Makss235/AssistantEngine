@@ -71,13 +71,13 @@ async function loadModules() {
         const res = await fetch("/api/modules");
         const { data } = await res.json();
         moduleList.innerHTML = "";
-        for (const mod of data) {
+        for (const module of data) {
             const li = document.createElement("li");
-            const badge = mod.has_manifest
-                ? (mod.manifest_valid === false ? '<span class="badge invalid">битый JSON</span>' : "")
+            const badge = module.has_manifest
+                ? (module.manifest_valid === false ? '<span class="badge invalid">битый JSON</span>' : "")
                 : '<span class="badge">без манифеста</span>';
-            li.innerHTML = `${mod.name} ${badge}`;
-            li.addEventListener("click", () => selectModule(mod.name, li));
+            li.innerHTML = `${module.module_name} ${badge}`;
+            li.addEventListener("click", () => selectModule(module.module_name, li));
             moduleList.appendChild(li);
         }
         if (!data.length) moduleList.innerHTML = '<li class="hint">Модулей нет.</li>';
@@ -118,7 +118,7 @@ async function selectFile(name, filename, btn) {
         return;
     }
     const { data } = await res.json();
-    showEditor(data.content, data.ext);
+    showEditor(data.content, data.file_ext);
 }
 
 loadModules();

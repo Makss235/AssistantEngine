@@ -1,5 +1,3 @@
-# TODO переименовать name в module_name, filename в file_name, ext в file_ext, content в file_content
-
 import builder.utils as builder_utils
 import panel.services.utils as panel_utils
 
@@ -11,7 +9,7 @@ def list_modules() -> list[dict]:
     """
     Перечисляет каталоги модулей с метаданными.
     Returns:
-        list[dict]: Список модулей с полями name, has_manifest, has_handler, intents и т.п.
+        list[dict]: Список модулей с полями module_name, has_manifest, has_handler, intents и т.п.
     """
     base = builder_settings.MODULES_DIR
     if not base.exists():
@@ -25,18 +23,18 @@ def list_modules() -> list[dict]:
     return modules
 
 
-def module_detail(name: str) -> dict:
+def module_detail(module_name: str) -> dict:
     """
     Возвращает подробности по модулю: метаданные, список файлов и разобранный манифест.
     Args:
-        name (str): Имя модуля.
+        module_name (str): Имя модуля.
     Returns:
         dict: Детали модуля.
     Raises:
         PanelError: Некорректное имя модуля.
         FileNotFoundError: Модуль не найден.
     """
-    directory = panel_utils._resolve_module_dir(name)
+    directory = panel_utils._resolve_module_dir(module_name)
     info = panel_utils._module_info(directory)
     info["files"] = [
         f.name for f in sorted(directory.iterdir()) if f.is_file() and f.suffix in panel_settings.ALLOWED_EXT
@@ -54,24 +52,24 @@ def module_detail(name: str) -> dict:
     return info
 
 
-def read_module_file(name: str, filename: str) -> dict:
+def read_module_file(module_name: str, file_name: str) -> dict:
     """
     Читает содержимое файла внутри модуля.
     Args:
-        name (str): Имя модуля.
-        filename (str): Имя файла внутри модуля.
+        module_name (str): Имя модуля.
+        file_name (str): Имя файла внутри модуля.
     Returns:
-        dict: {name, filename, ext, content}.
+        dict: {module_name, file_name, file_ext, content}.
     Raises:
         PanelError: Некорректный путь или недопустимый тип файла.
         FileNotFoundError: Файл не существует.
     """
-    target = panel_utils._resolve_module_file(name, filename)
+    target = panel_utils._resolve_module_file(module_name, file_name)
     if not target.exists():
-        raise FileNotFoundError(f"File not found: {name}/{filename}")
+        raise FileNotFoundError(f"File not found: {module_name}/{file_name}")
     return {
-        "name": name,
-        "filename": filename,
-        "ext": target.suffix,
+        "module_name": module_name,
+        "file_name": file_name,
+        "file_ext": target.suffix,
         "content": target.read_text(encoding="utf-8"),
     }

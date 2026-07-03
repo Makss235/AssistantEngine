@@ -22,7 +22,7 @@ def _module_info(directory: Path) -> dict:
         dict: Сводка по модулю.
     """
     info = {
-        "name": directory.name,
+        "module_name": directory.name,
         "is_shared": directory.name == "_shared",
         "has_manifest": (directory / "manifest.json").exists(),
         "has_handler": (directory / "handler.py").exists(),
@@ -46,55 +46,55 @@ def _module_info(directory: Path) -> dict:
     return info
 
 
-def _resolve_module_dir(name: str) -> Path:
+def _resolve_module_dir(module_name: str) -> Path:
     """
     Резолвит каталог модуля с защитой от выхода за пределы MODULES_DIR.
     Args:
-        name (str): Имя модуля.
+        module_name (str): Имя модуля.
     Returns:
         Path: Путь к каталогу модуля.
     Raises:
         PanelError: Некорректное имя модуля.
         FileNotFoundError: Модуль не найден.
     """
-    if not name or name in (".", "..") or "/" in name or "\\" in name:
-        raise PanelError(f"Invalid module name: {name!r}")
+    if not module_name or module_name in (".", "..") or "/" in module_name or "\\" in module_name:
+        raise PanelError(f"Invalid module name: {module_name!r}")
 
     base = builder_settings.MODULES_DIR.resolve()
-    target = (base / name).resolve()
+    target = (base / module_name).resolve()
     try:
         target.relative_to(base)
     except ValueError:
-        raise PanelError(f"Path escapes modules directory: {name!r}")
+        raise PanelError(f"Path escapes modules directory: {module_name!r}")
 
     if not target.is_dir():
-        raise FileNotFoundError(f"Module not found: {name}")
+        raise FileNotFoundError(f"Module not found: {module_name}")
     return target
 
 
-def _resolve_module_file(name: str, filename: str) -> Path:
+def _resolve_module_file(module_name: str, file_name: str) -> Path:
     """
     Резолвит файл модуля с защитой от path traversal и проверкой типа.
     Args:
-        name (str): Имя модуля.
-        filename (str): Имя файла внутри модуля.
+        module_name (str): Имя модуля.
+        file_name (str): Имя файла внутри модуля.
     Returns:
         Path: Путь к файлу модуля.
     Raises:
         PanelError: Некорректное имя файла.
         FileNotFoundError: Файл не найден.
     """
-    directory = _resolve_module_dir(name)
+    directory = _resolve_module_dir(module_name)
 
-    if not filename or "/" in filename or "\\" in filename or ".." in filename:
-        raise PanelError(f"Invalid file name: {filename!r}")
+    if not file_name or "/" in file_name or "\\" in file_name or ".." in file_name:
+        raise PanelError(f"Invalid file name: {file_name!r}")
 
     base = builder_settings.MODULES_DIR.resolve()
-    target = (directory / filename).resolve()
+    target = (directory / file_name).resolve()
     try:
         target.relative_to(base)
     except ValueError:
-        raise PanelError(f"Path escapes modules directory: {filename!r}")
+        raise PanelError(f"Path escapes modules directory: {file_name!r}")
 
     if target.suffix not in panel_settings.ALLOWED_EXT:
         raise PanelError(f"File type not allowed: {target.suffix!r}")
