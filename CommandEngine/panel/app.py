@@ -36,7 +36,10 @@ def api_build() -> JSONResponse:
     try:
         with redirect_stdout(log):
             build()
-        return JSONResponse({"ok": True, "log": log.getvalue()})
+        return JSONResponse({
+            "ok": True, 
+            "log": log.getvalue()
+        })
     except BuildError as e:
         return JSONResponse(
             status_code=400,
