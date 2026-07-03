@@ -1,7 +1,7 @@
 import yaml
 
-from config import settings
-from utils import *
+from builder.config import settings
+from builder.utils import *
 
 
 # ------------ Serialization of IR to YAML ------------

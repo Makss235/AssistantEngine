@@ -1,11 +1,11 @@
 import sys
 
-from config import settings
-from utils import *
-from scanner import *
-from validator import *
-from aggregator import *
-from serializator import *
+from builder.config import settings
+from builder.utils import *
+from builder.scanner import *
+from builder.validator import *
+from builder.aggregator import *
+from builder.serializator import *
 
 
 def build():
@@ -34,9 +34,16 @@ def build():
     print(f"Rasa files successfully generated in {settings.RASA_DATA_DIR} and {settings.RASA_DIR}")
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """
+    Точка входа CLI
+    """
     try:
         build()
     except BuildError as e:
         print(f"\nBUILDING ERROR: {e}", file=sys.stderr)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
