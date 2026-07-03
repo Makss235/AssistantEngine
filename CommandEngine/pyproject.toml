@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "commandengine"
+version = "1.0"
+description = "CommandEngine: builder and control panel"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic-settings",
+    "jsonschema",
+    "pyyaml",
+    "requests",
+    "fastapi",
+    "uvicorn[standard]"
+]
+
+[project.scripts]
+commandengine-build = "builder.main:main"
+
+[tool.setuptools]
+packages = ["builder", "panel"]
+py-modules = ["registry"]
+
+[tool.setuptools.package-data]
+panel = ["static/*"]
