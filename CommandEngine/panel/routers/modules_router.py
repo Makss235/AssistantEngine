@@ -15,7 +15,10 @@ def list_modules() -> dict:
     Returns:
         dict: {ok, data} - список модулей.
     """
-    return {"ok": True, "data": modules_service.list_modules()}
+    return {
+        "ok": True, 
+        "data": modules_service.list_modules()
+    }
 
 
 @router.get("/{module_name}")
@@ -30,7 +33,10 @@ def module_detail(module_name: str) -> dict:
         HTTPException: 400 - некорректное имя модуля, 404 - модуль не найден.
     """
     try:
-        return {"ok": True, "data": modules_service.module_detail(module_name)}
+        return {
+            "ok": True, 
+            "data": modules_service.module_detail(module_name)
+        }
     except panel_utils.PanelError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except FileNotFoundError as e:
@@ -50,7 +56,10 @@ def read_file(module_name: str, file_name: str) -> dict:
         HTTPException: 400 - некорректное имя модуля или файла, 404 - модуль или файл не найден.
     """
     try:
-        return {"ok": True, "data": modules_service.read_module_file(module_name, file_name)}
+        return {
+            "ok": True, 
+            "data": modules_service.read_module_file(module_name, file_name)
+        }
     except panel_utils.PanelError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except FileNotFoundError as e:
