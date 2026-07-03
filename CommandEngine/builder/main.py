@@ -19,8 +19,7 @@ def build():
     print(f"Found {len(manifests)} modules, {len(shared['entities'])} shared entities, {len(shared['rules'])} shared rules, "
           f"{len(shared['stories'])} shared stories, {len(shared['responses'])} shared responses")
 
-    validate_each(manifests)
-    check_collisions(manifests, shared)
+    validate(manifests, shared)
     print("Validation passed, generating Rasa files...")
 
     ir = aggregate_in_ir(manifests, shared)

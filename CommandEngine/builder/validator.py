@@ -5,6 +5,19 @@ from builder.utils import *
 
 
 # ------------ Validation ------------
+def validate(manifests: list[dict], shared: dict):
+    """
+    Валидирует модули и общие данные.
+    Args:
+        manifests (list[dict]): Список манифестов модулей.
+        shared (dict): Общие данные из директории _shared.
+    Raises:
+        BuildError: Манифест не соответствует схеме или содержит ошибки.
+    """
+    validate_each(manifests)
+    check_collisions(manifests, shared)
+
+
 def validate_each(manifests: list[dict]):
     """
     Проверка каждого манифеста на соответствие схеме и корректность данных.
