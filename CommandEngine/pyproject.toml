@@ -18,6 +18,7 @@ dependencies = [
 
 [project.scripts]
 commandengine-build = "builder.main:main"
+commandengine-panel = "panel.run:start"
 
 [tool.setuptools]
 packages = ["builder", "panel"]
