@@ -3,6 +3,8 @@ from pathlib import Path
 
 
 class BuildError(Exception):
+    """
+    Ошибка уровня билдера (неверный манифест, пересечение интентов и т.п.)."""
     pass
 
 

@@ -21,7 +21,7 @@ commandengine-build = "builder.main:main"
 commandengine-panel = "panel.run:start"
 
 [tool.setuptools]
-packages = ["builder", "panel"]
+packages = ["builder", "panel", "panel.routers"]
 py-modules = ["registry"]
 
 [tool.setuptools.package-data]
