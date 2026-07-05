@@ -6,7 +6,6 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Rasa](https://img.shields.io/badge/target-Rasa%203.1-5A17EE.svg)](https://rasa.com/)
-[![Build backend](https://img.shields.io/badge/build-setuptools-orange.svg)](https://setuptools.pypa.io/)
 [![Status](https://img.shields.io/badge/version-1.0-green.svg)](#)
 
 </div>
@@ -47,6 +46,7 @@
   - [Результат работы сборщик](#результат-работы-сборщик)
   - [Правила валидации](#правила-валидации)
   - [Внутренняя архитектура сборщика](#внутренняя-архитектура-сборщика)
+  - [Тесты](#тесты)
   - [HTTP API панели](#http-api-панели)
 
 ---
@@ -578,6 +578,41 @@ def run(slots: dict, entities: dict) -> dict:
 | [`serializator.py`](builder/serializator.py) | `serialize_nlu`, `serialize_domain`, `serialize_rules`, `serialize_stories` | Рендеринг IR в YAML-файлы Rasa. |
 | [`utils.py`](builder/utils.py) | `load_json`, `manifest_to_commands`, `get_full_intent`, `get_command_type`, `as_list`, `BuildError` | Общие функции. |
 | [`main.py`](builder/main.py) | `build`, `main` | Выполняет конвейер в правильном порядке и служит точкой входа CLI. |
+
+## Тесты
+
+Сборщик покрыт тестами на `pytest` (каталог `tests/`) - по файлу на каждую стадию конвейера (`scan`, `validate`, `aggregate`, `serialize`) плюс сквозные тесты `build()`. Тесты изолированы: каждый работает во временном проекте и не трогает реальные `modules/` и `rasa/`.
+
+Установка dev-зависимостей и запуск (в основном окружении):
+
+```bash
+# cd CommandEngine/
+pip install -e ".[dev]"   
+# ИЛИ
+# uv pip install -e ".[dev]"
+
+pytest
+```
+
+По итогу последней команды будут успешно выполнены 70 тестов:
+```bash
+========================= test session starts =========================
+platform win32 -- Python 3.10.20, pytest-9.1.1, pluggy-1.6.0
+rootdir: D:\Projects\ControlEngine\CommandEngine
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.14.1
+collected 70 items
+
+tests\test_aggregator.py ...........                            [ 15%]
+tests\test_build_e2e.py .....                                   [ 22%]
+tests\test_scanner.py ........                                  [ 34%]
+tests\test_serializator.py ............                         [ 51%]
+tests\test_utils.py ..................                          [ 77%]
+tests\test_validator.py ................                        [100%]
+
+========================= 70 passed in 0.66s =========================
+```
 
 ## HTTP API панели
 
