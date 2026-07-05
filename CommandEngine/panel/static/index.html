@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommandEngine - панель управления</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Панель управления CommandEngine</h1>
+
+    <section id="actions">
+        <button data-action="scan">Сканировать</button>
+        <button data-action="validate">Валидация</button>
+        <button data-action="build">Собрать</button>
+    </section>
+    <pre id="output">Готов.</pre>
+
+    <div class="layout">
+        <aside id="modules">
+            <h2>Модули</h2>
+            <ul id="module-list"><li class="hint">Загрузка...</li></ul>
+        </aside>
+        <main id="viewer">
+            <div id="file-tabs"></div>
+            <div id="editor"><div class="hint">Выберите модуль и файл слева.</div></div>
+        </main>
+    </div>
+
+    <script type="module" src="/static/app.js"></script>
+</body>
+</html>
