@@ -16,12 +16,24 @@ dependencies = [
     "uvicorn[standard]"
 ]
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
 [project.scripts]
 commandengine-build = "builder.main:main"
 commandengine-panel = "panel.run:start"
 
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
 [tool.setuptools]
-packages = ["builder", "panel", "panel.routers"]
+packages = [
+    "builder", 
+    "panel", 
+    "panel.routers", 
+    "panel.services"
+]
 py-modules = ["registry"]
 
 [tool.setuptools.package-data]
