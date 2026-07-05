@@ -6,9 +6,7 @@ from conftest import static_cmd
 
 
 def test_scan_finds_modules_and_sets_dir(project):
-    project.write_module(
-        "greeting", 
-        {
+    project.write_module("greeting", {
             "module": "greeting", 
             **static_cmd("hi")
         }
