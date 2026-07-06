@@ -191,6 +191,8 @@ CommandEngine/
 │   ├── endpoints.yml
 │   └── actions/actions.py
 │
+├── tests/
+│
 └── pyproject.toml
 ```
 
